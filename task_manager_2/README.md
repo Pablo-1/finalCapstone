@@ -14,7 +14,9 @@ The program offers the following functionality:
 5. e - exit - exits program
 
 For a user with admin credentials the program offers additional functionality:
-1. ga - generate reports - the option will generate two new files: user_overview containing:
+1. ga - generate reports - the option will generate two new files: 
+
+                         - user_overview containing:
                             - total number of tasks assigned to a user
                             - the percentage of the total number of tasks that heve been assigned to that user
                             - the percentage of the total number of tasks that have been assigned to that user
