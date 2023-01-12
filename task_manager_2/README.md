@@ -27,5 +27,6 @@ For a user with admin credentials the program offers additional functionality:
       - total number of completed tasks
       - total number of uncompleted tasks
       - total number of tasks that haven't been completed and that are overdue
+
 2. dr - display reports - this option grnerates and displays above reports on the screen
 3. ds - display statistics - displays total number of users and total number of tasks 
