@@ -1,6 +1,7 @@
 Inventory Capstone Project
 
 Program managing shoe warehouse inventory.
+The inventory data is being stored in inventory.txt file.
 
 The program offers the following functionality:
 
