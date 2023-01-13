@@ -1,7 +1,7 @@
 from tabulate import tabulate
 #========The beginning of the class==========
 class Shoe:
-    # initialising class atributes
+    # initializing class attributes
     def __init__(self, country, code, product, cost, quantity):
         self.country = country
         self.code = code
@@ -15,9 +15,8 @@ class Shoe:
     def get_quantity(self):
         return self.quantity
     # printing method
-    def __repr__(self):
+    def __str__(self):
         return f"{self.country}, {self.code}, {self.product}, {self.cost}, {self.quantity}"
-
 
 #=============Shoe list===========
 shoe_list = []
@@ -31,7 +30,7 @@ def read_shoes_data():
     data to create one object of shoes. You must use the try-except in this function
     for error handling. Remember to skip the first line using your code.
     '''
-    # initialising empty shoe 1 list 
+    # initializing empty shoe 1 list 
     shoe1 = []
     try:
         # reading information from inventory file and saving it in the lines list
@@ -39,12 +38,15 @@ def read_shoes_data():
             f.seek(0)
             for lines in f:
                 lines = f.readlines()
+            # reading every item(line) in lines list, stripping new line character and putting result in shoe1 list
             for line in lines:
                 line = line.strip("\n")
                 shoe1.append(line)
+        # temporary variable to hold country, product, cost, quantity values
         temp = ""
         # loop appending Shoe() items to shoe_list
         for item in shoe1:
+            # if statement skips last line which is empty after stripping end of line character
             if item != "":
                 temp = item
                 temp = temp.split(",")
@@ -53,8 +55,10 @@ def read_shoes_data():
                 product = temp[2]
                 cost = temp[3]
                 quantity = temp[4]
+                # appending shoe class item to shoe_list
                 shoe = Shoe(country, code, product, cost, quantity)
                 shoe_list.append(shoe)
+    # exception if file is not found
     except FileNotFoundError:
         print("File does not exist.")
     return shoe_list
@@ -66,7 +70,7 @@ def capture_shoes():
     about a shoe and use this data to create a shoe object
     and append this object inside the shoe list.
     '''
-    # asking user for input
+    # asking user to input all of information that will be stored as class Shoe attributes
     print("Please input shoe information: ")
     country = input("Country of production: ")
     code = input("Item code: ").upper()
@@ -78,15 +82,16 @@ def capture_shoes():
     shoe_list.append(shoe)
     # updating inventory file
     with open("inventory.txt", "a") as f:
-        f.write(str(shoe) + "\n")
+        f.write("\n" + str(shoe))
 
 def view_all():
-    # printing all items from shoe_list in a table using tabulate
+    # temporary lists used to hold values from shoe_list in order to print with tabulate
     table = []
     sep = []
     for shoe in shoe_list:
         sep = [shoe.country, shoe.code, shoe.product, shoe.cost, shoe.quantity]
         table.append(sep)
+    # printing all items from shoe_list in a table using tabulate
     print(tabulate(table, headers = ["Country","Code","Product","Cost","Quantity"],tablefmt="simple_grid"))
 
 def re_stock():
@@ -104,6 +109,8 @@ def re_stock():
     index = min(lowest_quantity)
     # printing out lowest stock item
     for item in shoe_list:
+        # if index (determined as being the lowest value) is equal to item.quantity attribute 
+        # that means we have found our shoe (item) which then can be printed out 
         if index == int(item.quantity):
             shoe_to_restock = item
             print(f"Item to restock {shoe_to_restock}\n")
@@ -111,20 +118,26 @@ def re_stock():
 
     # restocking options
     while True:
-        # asking user to pick option to restock or leave without ammending the item
+        # asking user to pick option to restock or leave without amending the item
         how_much = input(
             '''Would you like to restock:
                 -  If yes please type in quantity you want to restock:
                 -  If no please type N:
             ''' ).upper()
         # if option to restock is taken the line in inventory file is being updated
-        if how_much.isdigit():
-            shoe_to_restock.quantity = how_much
+        if how_much.isdigit():# if input has been determined to be a digit
+            shoe_to_restock.quantity = how_much # .quantity attribute is being changed to the one inputted by the user
             with open("inventory.txt", "r") as f:
                 i = 0
                 lines = f.readlines()
+                # reading information from the file
                 for line in lines:
+                    # i variable to make sure we don't go out of range when checking lines
                     i += 1
+                    # if shoe_to_restock (determined earlier to be the one with the lowest stock) is found in a given line
+                    # line is being stripped from end of line character, split into separate list items, item[4] which is quantity
+                    # is being amended after which list is being put together with .join statement and stripped of unnecessary \
+                    # characters, end of line character is being added 
                     if shoe_to_restock.code in line:
                         line = line.strip("\n")
                         line = line.split(",")
@@ -134,6 +147,7 @@ def re_stock():
                         line = line.replace("'", "")
                         line = line.replace(", ", ",")
                         lines[i-1] = line + "\n"
+            # final, amended lines list is being written to the inventory.txt file
             with open("inventory.txt", "w") as f:
                 f.writelines(lines)
                 f.write("\n")
@@ -142,7 +156,7 @@ def re_stock():
         elif how_much == "N":
             break
         else:
-            print("You have enterred incorrect value, please try again. \n")
+            print("You have entered incorrect value, please try again. \n")
 
 
 
@@ -150,7 +164,7 @@ def re_stock():
 def search_shoe():
     # asking user to input shoe code
     code = input("Please enter the shoe code: ").upper()
-    # going trough all of the shoe_list items to check if they contain given code
+    # going trough all of the shoe_list items to check if they contain given code as item.code (Shoe class attribute)
     for item in shoe_list:
         if code in item.code:
             print(f"The item: {item}")
@@ -162,7 +176,7 @@ def value_per_item():
     Please keep the formula for value in mind: value = cost * quantity.
     Print this information on the console for all the shoes.
     '''
-    # initialising empty lists to hold cost, number of items and make data respectively
+    # initializing empty lists to hold cost, number of items and make data respectively
     cost = []
     number_of_items = []
     make = []
@@ -173,8 +187,14 @@ def value_per_item():
             number_of_items.append(shoe.quantity)
     # printing out value per item
     print("Price for pair of: ")
+    # temporary lists to hold calculated values
+    tab = [] # tab holds all of the values
+    item = [] # item holds a single to be appended to the tab list
     for i in range(len(cost)):
-        print(f"{make[i]} is {round(int(cost[i])/int(number_of_items[i]), 2)}") 
+        item = [make[i], round(int(cost[i])/int(number_of_items[i]), 2)]
+        tab.append(item)
+    # printing items and corresponding calculated values in a table using tabulate
+    print(tabulate(tab, headers=["make", "value"],tablefmt="simple_grid"))
 
 def highest_qty():
     
@@ -182,19 +202,22 @@ def highest_qty():
     Write code to determine the product with the highest quantity and
     print this shoe as being for sale.
     '''
-    # initialising quantity list to store quantities
+    # initializing quantity list to store quantities of all shoe_list items
     quantity = []
+    # appending .quantity attribute to quantity list
     for shoe in shoe_list:
         quantity.append(int(shoe.quantity))
-    # indes of highiest stock item
-    highiest = max(quantity)
+    # index of highest stock item in quantity list
+    highest = max(quantity)
     # printing out result
     for shoe in shoe_list:
-        if highiest == int(shoe.quantity):
+        # if shoe class item quantity in a shoe_list is the same as highest variable 
+        # that means we have found our shoe and we can print out the result
+        if highest == int(shoe.quantity):
             print (f"{shoe} is on sale")
 
 #================================
-# populating shoe list
+# populating shoe list using read_shoe_data function
 read_shoes_data()
 
 #==========Main Menu=============
@@ -202,7 +225,7 @@ read_shoes_data()
 Create a menu that executes each function above.
 This menu should be inside the while loop. Be creative!
 '''
-# manu loop with options
+# menu loop with menu options
 while True:
     print('''
     -------------------------------------------------------------
@@ -214,12 +237,14 @@ while True:
     re - restock item with lowest quantity in stock
     ss - search shoe
     vp - display value of single pair of shoes currently in stock
-    hq - display shoes in highiest quantity currently in stock
+    hq - display shoes in hightest quantity currently in stock
     e - exit
     -------------------------------------------------------------
     ''')
+    # user inputs option from the menu is being converted to lower case
     menu = input("Option :").lower()
 
+    # statements below checking what has been inputted by the user
     if menu == "cs":
         capture_shoes()
 
@@ -242,5 +267,6 @@ while True:
         print("Program ended.")
         exit()
 
+    # in case incorrect input
     else:
-        print("You have enterred incorrect option. Please try again.")
+        print("You have entered incorrect option. Please try again.")
