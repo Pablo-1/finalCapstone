@@ -75,8 +75,19 @@ def capture_shoes():
     country = input("Country of production: ")
     code = input("Item code: ").upper()
     product = input("Please type in model: ")
-    cost = input("Please enter cost: ")
-    quantity = input("Please enter quantity: ")
+    while True:
+        try:    
+            cost = float(input("Please enter cost: "))
+            break
+        except:
+            print("Please enter a number.")
+    while True:
+        try:    
+            quantity = int(input("Please enter quantity: "))
+            break
+        except:
+            print("Please enter a number.")
+        
     # appending shoe_list
     shoe = Shoe(country, code, product, cost, quantity)
     shoe_list.append(shoe)
@@ -113,7 +124,9 @@ def re_stock():
         # that means we have found our shoe (item) which then can be printed out 
         if index == int(item.quantity):
             shoe_to_restock = item
-            print(f"Item to restock {shoe_to_restock}\n")
+            tab = tabulate([[shoe_to_restock.country, shoe_to_restock.code, shoe_to_restock.product, shoe_to_restock.cost, shoe_to_restock.quantity]],headers = ["Country","Code","Product","Cost","Quantity"],tablefmt="simple_grid" )
+            print(f"Item to restock \n")
+            print(tab)
             print(f"Quantity left {shoe_to_restock.quantity}\n")
 
     # restocking options
@@ -167,7 +180,9 @@ def search_shoe():
     # going trough all of the shoe_list items to check if they contain given code as item.code (Shoe class attribute)
     for item in shoe_list:
         if code in item.code:
-            print(f"The item: {item}")
+            # putting search result in a one row tab and printing it
+            tab = tabulate([[item.country, item.code, item.product, item.cost, item.quantity]],headers = ["Country","Code","Product","Cost","Quantity"],tablefmt="simple_grid" )
+            print(tab)
 
 
 def value_per_item():
@@ -191,7 +206,7 @@ def value_per_item():
     tab = [] # tab holds all of the values
     item = [] # item holds a single to be appended to the tab list
     for i in range(len(cost)):
-        item = [make[i], round(int(cost[i])/int(number_of_items[i]), 2)]
+        item = [make[i], round(float(cost[i])/int(number_of_items[i]), 2)]
         tab.append(item)
     # printing items and corresponding calculated values in a table using tabulate
     print(tabulate(tab, headers=["make", "value"],tablefmt="simple_grid"))
@@ -214,7 +229,8 @@ def highest_qty():
         # if shoe class item quantity in a shoe_list is the same as highest variable 
         # that means we have found our shoe and we can print out the result
         if highest == int(shoe.quantity):
-            print (f"{shoe} is on sale")
+            tab = tabulate([[shoe.country, shoe.code, shoe.product, shoe.cost, shoe.quantity]],headers = ["Country","Code","Product","Cost","Quantity"],tablefmt="simple_grid" )
+            print (f"{tab} \n is on sale")
 
 #================================
 # populating shoe list using read_shoe_data function
